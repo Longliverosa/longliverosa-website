@@ -1,20 +1,34 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
-    <div class="sidebar">
+<RadzenComponents @rendermode="InteractiveServer" />
+<div class="page" style="background-color:rgba(87, 199, 180, 1)">
+    @*  <div class="sidebar">
         <NavMenu />
     </div>
-
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+ *@
+    <main style="height:100vh;background: linear-gradient(180deg,rgba(42, 123, 155, 1) 0%, rgba(87, 199, 180, 1) 100%);width:100vw">
+        <div class="top-row px-4" style="background-color:transparent">
+            <RadzenStack Orientation="Orientation.Horizontal" >
+                @* <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a> *@
+                <a style="color:white" href="/">Home</a>
+                <a style="color:white" href="/goal">The goal</a>
+                <a style="color:white" href="/why">Why</a>
+                <a style="color:white" href="/whoarewe">Who are we</a>
+                <a style="color:white" href="/faq">FAQ</a>
+            </RadzenStack>
         </div>
 
-        <article class="content px-4">
+        <article class="content px-4" style="overflow:hidden auto">
             @Body
         </article>
     </main>
 </div>
+
+<style>
+    a{
+        font-weight:bold;
+    }
+</style>
 
 <div id="blazor-error-ui" data-nosnippet>
     An unhandled error has occurred.

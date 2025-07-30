@@ -1,0 +1,9 @@
+.about-form-container {
+  border: 2px solid #4f8cc9;
+  border-radius: 12px;
+  background: #313436;
+  padding: 2rem 1.5rem;
+  margin: 2rem auto;
+  max-width: 600px;
+  box-shadow: 0 2px 12px 0 rgba(79, 140, 201, 0.08);
+}

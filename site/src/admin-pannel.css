@@ -1,0 +1,129 @@
+/** Admin Panel Styles */
+
+.admin-panel-container {
+  max-width: 400px;
+  margin: 48px auto;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px 0 rgba(55, 48, 163, 0.10), 0 1.5px 4px 0 rgba(0,0,0,0.04);
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.admin-panel-title {
+  color: #3730a3;
+  margin-bottom: 1.5rem;
+}
+
+.admin-panel-error {
+  color: red;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.admin-panel-btn,
+.admin-panel-btn:disabled {
+  padding: 0.8rem 2rem;
+  background: linear-gradient(90deg, #6366f1 0%, #3730a3 100%);
+  color: #fff;
+  font-size: 1.08rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px 0 rgba(99, 102, 241, 0.10);
+  transition: background 0.2s, transform 0.1s;
+}
+
+.admin-panel-btn:disabled {
+  background: linear-gradient(90deg, #a5b4fc 0%, #a5b4fc 100%);
+  cursor: not-allowed;
+}
+
+.admin-panel-btn-back {
+  padding: 0.7rem 2rem;
+  background: #e0e7ff;
+  color: #3730a3;
+  font-size: 1.05rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  box-shadow: 0 1px 4px 0 rgba(99, 102, 241, 0.08);
+  transition: background 0.2s, transform 0.1s;
+}
+
+.admin-panel-form {
+  width: 100%;
+  max-width: 350px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  align-items: stretch;
+}
+
+.admin-panel-form label {
+  font-weight: 500;
+  color: #4b5563;
+}
+
+.admin-panel-form input[type="text"],
+.admin-panel-form input[type="file"],
+.admin-panel-form textarea {
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border: 1.5px solid #c7d2fe;
+  border-radius: 7px;
+  font-size: 1rem;
+  background: #f1f5f9;
+  color: #1e293b;
+  margin-top: 0.2rem;
+  box-sizing: border-box;
+}
+
+.admin-panel-form input[type="file"] {
+  padding: 0.5rem 0.5rem;
+}
+
+.admin-panel-form textarea {
+  resize: vertical;
+}
+
+.admin-panel-success {
+  color: green;
+  font-weight: 500;
+  margin-bottom: -0.7rem;
+}
+
+.admin-panel-error-inline {
+  color: red;
+  font-weight: 500;
+  margin-bottom: -0.7rem;
+}
+
+.admin-panel-invite-code {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #3730a3;
+  letter-spacing: 2px;
+  margin-bottom: 1.5rem;
+}
+
+.admin-panel-btn-row {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  justify-content: center;
+}
+
+.admin-panel-flex-col-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+}

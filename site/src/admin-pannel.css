@@ -163,18 +163,134 @@
   width: 100%;
 }
 
-/* Responsive scaling for content box */
-@media (max-width: 600px) {
-  .admin-panel-container {
-    max-width: 98vw;
-    padding: 1.2rem 0.5rem;
-  }
+/* --- MISSING CSS FROM COMPONENTS --- */
+
+/* Slash command autocomplete dropdown for devpost form */
+.slash-autocomplete-dropdown {
+  font-family: inherit;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  z-index: 10;
+  background: white;
+  color: black;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-top: 2px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  max-height: 220px;
+  overflow-y: auto;
+  font-size: 14px;
+}
+
+.slash-autocomplete-option {
+  padding: 8px 12px;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+
+.slash-autocomplete-option.selected,
+.slash-autocomplete-option:hover {
+  background: #f1f5f9;
+}
+
+.slash-autocomplete-option span {
+  /* For better spacing in dropdown */
+  margin-bottom: 1px;
+}
+
+.slash-autocomplete-option span:first-child {
+  font-weight: 500;
+}
+
+.slash-autocomplete-option span:nth-child(2) {
+  color: #666;
+  font-size: 12px;
+}
+
+.slash-autocomplete-option span:nth-child(3) {
+  color: #aaa;
+  font-size: 11px;
+}
+
+/* Responsive adjustments for devpost form */
+@media (max-width: 700px) {
   .admin-panel-form.devpost-form {
-    left: 0.5rem;
-    right: 0.5rem;
-    top: 0.5rem;
-    bottom: 0.5rem;
-    padding: 2.5rem 0.5rem;
+    padding: 2rem 2vw;
     border-radius: 18px;
   }
+  .admin-panel-form.devpost-form textarea {
+    min-height: 180px;
+    font-size: 1rem;
+    padding: 0.7rem;
+  }
 }
+
+/* Hide scrollbars for autocomplete dropdown on Webkit browsers */
+.slash-autocomplete-dropdown::-webkit-scrollbar {
+  width: 6px;
+  background: #f1f5f9;
+}
+.slash-autocomplete-dropdown::-webkit-scrollbar-thumb {
+  background: #e0e7ff;
+  border-radius: 3px;
+}
+
+/* Utility: visually hide but keep accessible */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0,0,0,0) !important;
+  border: 0 !important;
+}
+
+/* Add focus style for accessibility */
+.admin-panel-form input:focus,
+.admin-panel-form textarea:focus {
+  outline: 2px solid #6366f1;
+  outline-offset: 1px;
+  border-color: #6366f1;
+}
+
+/* Add a little spacing for form elements */
+.admin-panel-form label,
+.admin-panel-form input,
+.admin-panel-form textarea {
+  margin-bottom: 0.7rem;
+}
+
+/* Make sure file input label and input are spaced */
+.admin-panel-form input[type="file"] {
+  margin-bottom: 1rem;
+}
+
+/* Add a little spacing for the devpost form's title input */
+.admin-panel-form.devpost-form input[type="text"] {
+  font-size: 1.15rem;
+  padding: 0.7rem 1rem;
+  margin-bottom: 1.2rem;
+}
+
+/* Add a little spacing for the devpost form's label */
+.admin-panel-form.devpost-form label {
+  margin-bottom: 0.3rem;
+}
+
+/* Add a little spacing for the devpost form's button row */
+.admin-panel-form.devpost-form .admin-panel-btn-row {
+  margin-top: 1.2rem;
+}
+
+/* Add a little spacing for the add art form's button row */
+.admin-panel-form .admin-panel-btn-row {
+  margin-top: 1.2rem;
+}
+
+/* End missing CSS */

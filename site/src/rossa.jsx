@@ -1,6 +1,6 @@
 import './rosa.css';
-import { useState, useEffect } from "react";
-import { Navbar } from "./App";
+import React, { useState, useEffect } from "react";
+import { Navbar } from "./App.jsx";
 import { getFirestore, collection, addDoc, serverTimestamp, query, where, getDocs, orderBy } from "firebase/firestore";
 import { app as firebaseApp } from '../config/firebase';
 

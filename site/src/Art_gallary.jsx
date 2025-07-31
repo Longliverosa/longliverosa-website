@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import './art_gallary.css';
-import { Navbar } from './App';
+import { Navbar } from './App.jsx';
 
 // create db vars
 let db = null;
 let firestoreReady = false;
 let firestoreInitPromise = null;
 
-//get an istance of the db 
+//get an instance of the db 
 function getDbInstance() {
   if (firestoreReady && db) return Promise.resolve(db);
   if (firestoreInitPromise) return firestoreInitPromise;

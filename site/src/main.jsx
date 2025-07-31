@@ -1,57 +1,37 @@
-import { StrictMode, useEffect } from 'react'
+import { StrictMode, Suspense, lazy } from 'react'
 import { createRoot } from 'react-dom/client'
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './index.css'
+
+// Dynamic imports for route components
 import App from './App.jsx'
-import SignIn from './login.jsx'
-import SignUp from './Sign-up.jsx'
-import AdminPanel from './admin_pannel.jsx'
-import ArtGallery from './Art_gallary.jsx'
-import DevBlog from './dev_blog.jsx'
-import About from './about.jsx'
-import Rosa from './rossa.jsx'
-import ApproveRosa from './approve-rosa.jsx'
+const SignIn = lazy(() => import('./login.jsx'))
+const SignUp = lazy(() => import('./Sign-up.jsx'))
+const AdminPanel = lazy(() => import('./admin_pannel.jsx'))
+const ArtGallery = lazy(() => import('./Art_gallary.jsx'))
+const DevBlog = lazy(() => import('./dev_blog.jsx'))
+const About = lazy(() => import('./about.jsx'))
+const Rosa = lazy(() => import('./rossa.jsx'))
+const ApproveRosa = lazy(() => import('./approve-rosa.jsx'))
 
+// No need for BackgroundController anymore; index.css handles navbar and background
 
-// Helper component to control background color based on route
-function BackgroundController() {
-  const location = useLocation()
-
-  useEffect(() => {
-    // Default background color from index.css
-    let defaultBg = '#3399ff'
-    // If on /admin or /signup, set to default (in case login.css overrides)
-    if (location.pathname === '/admin' || location.pathname === '/signup') {
-      document.body.style.backgroundColor = defaultBg
-    } else {
-      // For all other routes, also enforce default background
-      document.body.style.backgroundColor = defaultBg
-    }
-    // Optionally, clean up on unmount
-    return () => {
-      document.body.style.backgroundColor = defaultBg
-    }
-  }, [location.pathname])
-
-  return null
-}
-
-//all the routes the site 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
-      <BackgroundController />
-      <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/art-gallery" element={<ArtGallery />} />
-        <Route path="/Devblog" element={<DevBlog/>} />
-        <Route path="/about" element={<About/>} />
-        <Route path="/admin" element={<SignIn/>} />
-        <Route path="/signup" element={<SignUp/>} />
-        <Route path="/admin-panel" element={<AdminPanel/>} />
-        <Route path="/rosa" element={<Rosa />} />
-        <Route path='/rosa-approve'element={<ApproveRosa/>}/>
-      </Routes>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Routes>
+          <Route path="/" element={<App />} />
+          <Route path="/art-gallery" element={<ArtGallery />} />
+          <Route path="/Devblog" element={<DevBlog />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/admin" element={<SignIn />} />
+          <Route path="/signup" element={<SignUp />} />
+          <Route path="/admin-panel" element={<AdminPanel />} />
+          <Route path="/rosa" element={<Rosa />} />
+          <Route path="/rosa-approve" element={<ApproveRosa />} />
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   </StrictMode>,
 )

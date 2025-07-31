@@ -1,11 +1,11 @@
 import './about.css';
-import { Navbar } from "./App";
+import { Navbar } from './App.jsx';
 
 function About() {
   return (
     <>
       <Navbar />
-      <div className="about-form-container" style={{ marginTop: "80px" }}>
+      <div className="about-form-container">
         <h2>Who are we</h2>
         <p>
           We are the DougDoug Community, united by our love for Rosa the sea otter and the joy of creating together. Through our Discord server, we’ve come together to work collaboratively on the Long Live Rosa game—an entirely community-driven tribute built in pixel art using the Godot engine.
@@ -39,12 +39,12 @@ function About() {
         <h2>How to get involved</h2>
         <p>
           Join our Discord to gain access to channels where you can contribute or just spectate.<br />
-          Head over to the github repositories to contribute to the game or website.<br />
+          Head over to the GitHub repositories to contribute to the game or website.<br />
           Everyone is welcome—whether you're pitching art ideas, writing puzzles in Godot GDScript, composing sea‑shanties for bonus music, or helping moderate asset submission threads.
         </p>
       </div>
     </>
-  )
+  );
 }
 
 export default About;

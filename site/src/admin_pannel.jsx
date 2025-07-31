@@ -252,7 +252,7 @@ const SlashCommandTextarea = ({
             top: '100%',
             zIndex: 10,
             background: 'white',
-            color:"black",
+            color: "black",
             border: '1px solid #ddd',
             borderRadius: 6,
             marginTop: 2,
@@ -632,15 +632,7 @@ const AdminPanel = () => {
           </button>
         </div>
       )}
-      {/* Styles for autocomplete dropdown */}
-      <style>{`
-        .slash-autocomplete-dropdown {
-          font-family: inherit;
-        }
-        .slash-autocomplete-option.selected {
-          background: #f1f5f9;
-        }
-      `}</style>
+
     </div>
   );
 };

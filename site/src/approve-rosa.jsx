@@ -89,7 +89,7 @@ function ApproveRosa() {
 
   if (!user) {
     return (
-      <div style={{ textAlign: 'center', marginTop: 60 }}>
+      <div className="approve-rosa-container">
         <h2>Access Denied</h2>
         <p>You must be signed in to view this page.</p>
       </div>
@@ -97,30 +97,24 @@ function ApproveRosa() {
   }
 
   return (
-    <div className="approve-rosa-container" style={{ maxWidth: 600, margin: "60px auto", padding: 24 }}>
+    <div className="approve-rosa-container">
       <h2>Approve Rosa Messages</h2>
       <p>Welcome, {user.email || user.displayName || 'User'}!</p>
-      {error && <div style={{ color: "#ff4f4f", marginBottom: 16 }}>{error}</div>}
+      {error && <div className="approve-rosa-error">{error}</div>}
       {loading ? (
         <div>Loading messages...</div>
       ) : (
         <>
           {messages.length === 0 ? (
-            <div style={{ marginTop: 32, color: "#888" }}>No messages awaiting approval.</div>
+            <div className="approve-rosa-empty">No messages awaiting approval.</div>
           ) : (
-            <ul className="approve-rosa-list" style={{ listStyle: "none", padding: 0 }}>
+            <ul className="approve-rosa-list">
               {messages.map(msg => (
-                <li key={msg.id} className="approve-rosa-message" style={{
-                  border: "1px solid #cce0ff",
-                  borderRadius: 8,
-                  padding: 16,
-                  marginBottom: 20,
-                  background: "#f7fbff"
-                }}>
-                  <div style={{ marginBottom: 8, fontSize: 16, whiteSpace: "pre-line" }}>
+                <li key={msg.id} className="approve-rosa-message">
+                  <div>
                     {msg.message}
                   </div>
-                  <div style={{ fontSize: 14, color: "#555", marginBottom: 12 }}>
+                  <div>
                     <span>
                       {msg.anonymous ? "Anonymous" : (msg.name || "Unknown")}
                     </span>
@@ -129,28 +123,12 @@ function ApproveRosa() {
                     <button
                       onClick={() => handleApprove(msg.id)}
                       disabled={!!actionLoading[msg.id]}
-                      style={{
-                        background: "#4caf50",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: 4,
-                        padding: "6px 16px",
-                        cursor: actionLoading[msg.id] ? "not-allowed" : "pointer"
-                      }}
                     >
                       {actionLoading[msg.id] ? "Processing..." : "Approve"}
                     </button>
                     <button
                       onClick={() => handleDeny(msg.id)}
                       disabled={!!actionLoading[msg.id]}
-                      style={{
-                        background: "#f44336",
-                        color: "#fff",
-                        border: "none",
-                        borderRadius: 4,
-                        padding: "6px 16px",
-                        cursor: actionLoading[msg.id] ? "not-allowed" : "pointer"
-                      }}
                     >
                       {actionLoading[msg.id] ? "Processing..." : "Deny"}
                     </button>

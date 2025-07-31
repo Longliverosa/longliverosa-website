@@ -57,33 +57,33 @@ function Navbar() {
   }
 
   return (
-    <nav className="devblog-navbar">
-      <div className="devblog-navbar-inner">
-        <a href="/" className="devblog-navbar-title">Long live rosa</a>
-        <div className="devblog-navbar-links">
+    <nav className="nav">
+      <div className="nav-content">
+        <a href="/" className="nav-title">Long live rosa</a>
+        <div className="nav-links">
           <a
             href="/art-gallery"
-            className="devblog-navbar-link"
+            className="nav-link"
             ref={artGalleryLinkRef}
             onMouseEnter={handleArtGalleryHover}
             onFocus={handleArtGalleryHover}
           >
-            Art Gallary
+            Art Gallery
           </a>
-          <a href="/Devblog" className="devblog-navbar-link">Devblog</a>
-          <a href="/about" className="devblog-navbar-link">About</a>
-          <a href='/rosa' className='devblog-navbar-link'>Rosa</a>
-          <a href="https://www.youtube.com/@DougDougHaters" className="devblog-navbar-link">
-            <img src="/youtube.png" alt="YouTube" className="devblog-navbar-logo" />
+          <a href="/Devblog" className="nav-link">Devblog</a>
+          <a href="/about" className="nav-link">About</a>
+          <a href='/rosa' className='nav-link'>Rosa</a>
+          <a href="https://www.youtube.com/@DougDougHaters" className="nav-link">
+            <img src="/youtube.png" alt="YouTube" className="nav-logo" />
           </a>
-          <a href="https://discord.com/invite/aX6JBrVC" className="devblog-navbar-link">
-            <img src="/Discord.png" alt="Discord" className="devblog-navbar-logo" />
+          <a href="https://discord.com/invite/aX6JBrVC" className="nav-link">
+            <img src="/Discord.png" alt="Discord" className="nav-logo" />
           </a>
-          <a href="https://www.montereybayaquarium.org" className="devblog-navbar-link">
+          <a href="https://www.montereybayaquarium.org" className="nav-link">
             <img
               src="/MBALogo.png"
               alt="Monterey Bay Aquarium"
-              className="devblog-navbar-mba-logo"
+              className="nav-mba-logo"
             />
           </a>
         </div>
@@ -103,20 +103,7 @@ function App() {
           href="https://github.com/Longliverosa/longliverosa-game"
           target="_blank"
           rel="noopener noreferrer"
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            marginTop: '1.5rem',
-            padding: '0.6rem 1.2rem',
-            background: '#24292f',
-            color: '#fff',
-            borderRadius: '6px',
-            textDecoration: 'none',
-            fontWeight: 500,
-            fontSize: '1rem',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
-            transition: 'background 0.2s'
-          }}
+          className="github-link"
         >
           <svg
             height="22"

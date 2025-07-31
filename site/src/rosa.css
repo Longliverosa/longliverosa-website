@@ -1,0 +1,95 @@
+.rosa-container {
+  margin-top: 80px;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  background: #313436;
+  border-radius: 12px;
+  padding: 2rem 1.5rem;
+  box-shadow: 0 2px 12px 0 rgba(79, 140, 201, 0.08);
+  border: 2px solid #4f8cc9;
+}
+
+.rosa-container h1 {
+  margin-top: 0;
+  color: #4f8cc9;
+}
+
+.rosa-container ul {
+  padding-left: 1.2em;
+  margin-bottom: 1.5em;
+}
+
+.rosa-container li {
+  margin-bottom: 0.5em;
+}
+
+.rosa-container em {
+  color: #4f8cc9;
+  font-style: italic;
+}
+
+.rosa-container hr {
+  margin: 2rem 0;
+  border-color: #4f8cc9;
+}
+
+.rosa-container .rosa-form-section {
+  background: #232628;
+  border-radius: 10px;
+  padding: 1.5rem 1rem;
+  margin-top: 1.5rem;
+  border: 1.5px solid #4f8cc9;
+}
+
+.rosa-container .rosa-form-section h2 {
+  margin-bottom: 1rem;
+}
+
+.rosa-container textarea {
+  resize: vertical;
+  border-radius: 8px;
+  border: 1px solid #4f8cc9;
+  padding: 0.75rem;
+  font-size: 1rem;
+  background: #313436;
+  color: #fff;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Moved missing CSS for the name input field */
+.rosa-container input[type="text"] {
+  border-radius: 8px;
+  border: 1px solid #4f8cc9;
+  padding: 0.75rem;
+  font-size: 1rem;
+  background: #313436;
+  color: #fff;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.rosa-container button[type="submit"] {
+  background: #4f8cc9;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.6rem 1.2rem;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  align-self: flex-end;
+  transition: background 0.2s;
+}
+
+.rosa-container button[type="submit"]:hover,
+.rosa-container button[type="submit"]:focus {
+  background: #357ab8;
+}
+
+.rosa-container .rosa-thankyou {
+  color: #4f8cc9;
+  font-weight: 500;
+  font-size: 1.1rem;
+}

@@ -9,6 +9,9 @@ import AdminPanel from './admin_pannel.jsx'
 import ArtGallery from './Art_gallary.jsx'
 import DevBlog from './dev_blog.jsx'
 import About from './about.jsx'
+import Rosa from './rossa.jsx'
+import ApproveRosa from './approve-rosa.jsx'
+
 
 // Helper component to control background color based on route
 function BackgroundController() {
@@ -46,6 +49,8 @@ createRoot(document.getElementById('root')).render(
         <Route path="/admin" element={<SignIn/>} />
         <Route path="/signup" element={<SignUp/>} />
         <Route path="/admin-panel" element={<AdminPanel/>} />
+        <Route path="/rosa" element={<Rosa />} />
+        <Route path='/rosa-approve'element={<ApproveRosa/>}/>
       </Routes>
     </BrowserRouter>
   </StrictMode>,

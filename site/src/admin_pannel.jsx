@@ -3,6 +3,8 @@ import { getFirestore, collection, addDoc, serverTimestamp } from 'firebase/fire
 import { initializeApp } from 'firebase/app';
 import { app as firebaseApp } from '../config/firebase';
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 import './admin-pannel.css';
 
 const app = firebaseApp || initializeApp({});
@@ -306,6 +308,26 @@ const AdminPanel = () => {
   const [devPostError, setDevPostError] = useState('');
   const [devPostSuccess, setDevPostSuccess] = useState('');
 
+  // Auth state
+  const [authChecked, setAuthChecked] = useState(false);
+  const [user, setUser] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const auth = getAuth(app);
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
+      if (!firebaseUser) {
+        // Not logged in, redirect to login page
+        navigate('/login', { replace: true });
+      } else {
+        setUser(firebaseUser);
+      }
+      setAuthChecked(true);
+    });
+    return () => unsubscribe();
+    // eslint-disable-next-line
+  }, [navigate]);
+
   const handleAddArt = () => {
     setShowAddArtForm(true);
     setArtFile(null);
@@ -441,6 +463,25 @@ const AdminPanel = () => {
     }
   };
 
+  // New: handler for rosa-approve navigation
+  const handleRosaApprove = () => {
+    navigate('/rosa-approve');
+  };
+
+  if (!authChecked) {
+    // Optionally, show a loading spinner or nothing while checking auth
+    return (
+      <div className="admin-panel-container">
+        <div>Loading...</div>
+      </div>
+    );
+  }
+
+  // If user is null, the redirect will have already happened, but we can still guard
+  if (!user) {
+    return null;
+  }
+
   return (
     <div className="admin-panel-container">
       <h2 className="admin-panel-title">Admin Panel</h2>
@@ -568,6 +609,14 @@ const AdminPanel = () => {
             className="admin-panel-btn"
           >
             {loading ? 'Generating...' : 'Add User'}
+          </button>
+          {/* New button for rosa-approve navigation */}
+          <button
+            onClick={handleRosaApprove}
+            className="admin-panel-btn"
+            type="button"
+          >
+            Rosa Approve
           </button>
         </div>
       ) : (

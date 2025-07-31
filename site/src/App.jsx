@@ -72,6 +72,7 @@ function Navbar() {
           </a>
           <a href="/Devblog" className="devblog-navbar-link">Devblog</a>
           <a href="/about" className="devblog-navbar-link">About</a>
+          <a href='/rosa' className='devblog-navbar-link'>Rosa</a>
           <a href="https://www.youtube.com/@DougDougHaters" className="devblog-navbar-link">
             <img src="/youtube.png" alt="YouTube" className="devblog-navbar-logo" />
           </a>

@@ -69,11 +69,39 @@ const SignUp = () => {
         return;
       }
 
+      // Check if invite code is less than 24 hours old
+      const inviteDoc = querySnapshot.docs[0];
+      const inviteData = inviteDoc.data();
+      const createdAt = inviteData.createdAt;
+      let createdAtDate = null;
+      if (createdAt && typeof createdAt.toDate === 'function') {
+        createdAtDate = createdAt.toDate();
+      } else if (createdAt instanceof Date) {
+        createdAtDate = createdAt;
+      } else if (typeof createdAt === 'number') {
+        createdAtDate = new Date(createdAt);
+      }
+
+      if (!createdAtDate) {
+        setError('Invite code is missing creation time. Please request a new code.');
+        setLoading(false);
+        return;
+      }
+
+      const now = new Date();
+      const diffMs = now - createdAtDate;
+      const diffHours = diffMs / (1000 * 60 * 60);
+
+      if (diffHours > 24) {
+        setError('Invite code has expired (over 24 hours old). Please request a new code.');
+        setLoading(false);
+        return;
+      }
+
       // Proceed with user creation
       await createUserWithEmailAndPassword(auth, email, password);
 
       // Mark invite code as used
-      const inviteDoc = querySnapshot.docs[0];
       await updateDoc(doc(db, 'inviteCodes', inviteDoc.id), { used: true });
 
       alert('User created successfully');

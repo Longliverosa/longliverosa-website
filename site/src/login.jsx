@@ -1,7 +1,7 @@
-import { signInWithEmailAndPassword } from 'firebase/auth';
+import { signInWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { auth } from '../config/firebase';
+import { auth as importedAuth } from '../config/firebase';
 import './login.css';
 
 const SignIn = () => {
@@ -9,6 +9,9 @@ const SignIn = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+
+  // Use the same auth instance as admin panel expects
+  const auth = importedAuth || getAuth();
 
   // Map Firebase error codes to user-friendly messages
   const getFriendlyError = (firebaseError) => {
@@ -46,7 +49,10 @@ const SignIn = () => {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      // Redirect to admin panel on successful login
+      // Redirect to admin panel on successful login, passing auth if needed
+      // If you use context or a global auth, this is sufficient.
+      // If you want to pass auth explicitly, you could do:
+      // navigate('/admin-panel', { state: { auth } });
       navigate('/admin-panel');
     } catch (error) {
       setError(getFriendlyError(error));

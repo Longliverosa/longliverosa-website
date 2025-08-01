@@ -2,12 +2,11 @@ import React, { useEffect, useState } from 'react';
 import './art_gallary.css';
 import { Navbar } from './App.jsx';
 
-// create db vars
+// --- FIRESTORE DB LAZY LOADING ---
 let db = null;
 let firestoreReady = false;
 let firestoreInitPromise = null;
 
-//get an instance of the db 
 function getDbInstance() {
   if (firestoreReady && db) return Promise.resolve(db);
   if (firestoreInitPromise) return firestoreInitPromise;
@@ -22,7 +21,6 @@ function getDbInstance() {
   return firestoreInitPromise;
 }
 
-//Get all of the art from the db
 async function fetchArtworksFromFirestore() {
   const db = await getDbInstance();
   const { collection, getDocs, query, orderBy } = await import('firebase/firestore');
@@ -34,7 +32,7 @@ async function fetchArtworksFromFirestore() {
   }));
 }
 
-//This is the main display function for the page
+// --- ART GALLERY COMPONENT ---
 function ArtGallery() {
   const [artworks, setArtworks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -67,7 +65,6 @@ function ArtGallery() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [enlargedArt]);
 
-  //returns all of the html for the page 
   return (
     <>
       <Navbar />

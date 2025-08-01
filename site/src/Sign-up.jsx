@@ -14,7 +14,6 @@ const SignUp = () => {
   const [inviteCode, setInviteCode] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [termsAccepted, setTermsAccepted] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -44,11 +43,6 @@ const SignUp = () => {
 
     if (password !== confirmPassword) {
       setError('Passwords do not match.');
-      return;
-    }
-
-    if (!termsAccepted) {
-      setError('You must agree to the Terms and Conditions.');
       return;
     }
 
@@ -110,7 +104,6 @@ const SignUp = () => {
       setInviteCode('');
       setPassword('');
       setConfirmPassword('');
-      setTermsAccepted(false);
     } catch (error) {
       setError(error.message || 'Failed to create user.');
       console.log(error);

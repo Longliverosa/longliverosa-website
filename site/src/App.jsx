@@ -1,5 +1,5 @@
 import './App.css'
-import { useRef } from 'react'
+import { useRef, useEffect, useRef as useReactRef } from 'react'
 
 // --- Art Gallery Preload Logic ---
 // Ensure preloading does not affect First Contentful Paint (FCP)
@@ -43,6 +43,126 @@ function preloadArtGalleryImages() {
       // Silently ignore errors
     }
   });
+}
+
+// BubblesBackground component
+function BubblesBackground() {
+  const canvasRef = useReactRef(null);
+  const animationRef = useReactRef();
+  const bubblesRef = useReactRef([]);
+  const spawnTimeoutRef = useReactRef();
+
+  // Helper to get canvas size
+  function resizeCanvasToWindow(canvas) {
+    // Make canvas cover the viewport
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  // Bubble properties
+  function spawnBubble(canvas) {
+    const minRadius = 5;
+    const maxRadius = 10;
+    const radius = Math.random() * (maxRadius - minRadius) + minRadius;
+    const x = Math.random() * canvas.width;
+    const y = canvas.height + radius; // start just below the bottom
+    const speed = Math.random() * 0.7 + 0.6; // px per frame
+    const drift = (Math.random() - 0.5) * 0.5; // slight left/right drift
+    const alpha = Math.random() * 0.3 + 0.3; // transparency
+    // Add a property to indicate not to fill, but to stroke
+    return { x, y, radius, speed, drift, alpha, outline: true };
+  }
+
+  // Animation loop
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    let running = true;
+
+    // Initial size
+    resizeCanvasToWindow(canvas);
+
+    // Handle resize
+    function handleResize() {
+      resizeCanvasToWindow(canvas);
+    }
+    window.addEventListener('resize', handleResize);
+
+    // Animation
+    function animate() {
+      if (!running) return;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Update and draw bubbles
+      bubblesRef.current.forEach(bubble => {
+        bubble.y -= bubble.speed;
+        bubble.x += bubble.drift;
+      });
+
+      // Remove bubbles that are off the top
+      bubblesRef.current = bubblesRef.current.filter(
+        bubble => bubble.y + bubble.radius > 0
+      );
+
+      // Draw bubbles
+      for (const bubble of bubblesRef.current) {
+        ctx.save();
+        ctx.globalAlpha = bubble.alpha;
+        ctx.beginPath();
+        ctx.arc(bubble.x, bubble.y, bubble.radius, 0, 2 * Math.PI);
+        ctx.fillStyle = 'rgba(255,255,255,0.7)';
+        ctx.shadowColor = '#b3e0ff';
+        ctx.shadowBlur = 8;
+        ctx.fill();
+        ctx.restore();
+      }
+
+      animationRef.current = requestAnimationFrame(animate);
+    }
+
+    // Bubble spawner
+    function spawnLoop() {
+      if (!running) return;
+      // Spawn 1-2 bubbles at a time
+      const num = Math.random() < 0.7 ? 1 : 2;
+      for (let i = 0; i < num; ++i) {
+        bubblesRef.current.push(spawnBubble(canvas));
+      }
+      // Next spawn in 350-900ms
+      const next = Math.random() * 550 + 350;
+      spawnTimeoutRef.current = setTimeout(spawnLoop, next);
+    }
+
+    animate();
+    spawnLoop();
+
+    return () => {
+      running = false;
+      window.removeEventListener('resize', handleResize);
+      if (animationRef.current) cancelAnimationFrame(animationRef.current);
+      if (spawnTimeoutRef.current) clearTimeout(spawnTimeoutRef.current);
+    };
+  }, []);
+
+  // Style: fixed, behind everything, pointer-events none
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{
+        position: 'fixed',
+        left: 0,
+        top: 0,
+        width: '100vw',
+        height: '100vh',
+        zIndex: 0,
+        pointerEvents: 'none',
+        display: 'block',
+      }}
+      aria-hidden="true"
+      tabIndex={-1}
+    />
+  );
 }
 
 //function For displaying the navbar
@@ -96,6 +216,7 @@ function Navbar() {
 function App() {
   return (
     <>
+      <BubblesBackground />
       <Navbar />
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
         <h1>Long live rosa game</h1>

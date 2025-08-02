@@ -8,11 +8,9 @@ const db = getFirestore(firebaseApp);
 
 function formatDate(ts) {
   if (!ts) return '';
-  // Firestore Timestamp object
   if (typeof ts.toDate === 'function') {
     return ts.toDate().toLocaleString();
   }
-  // Fallback: try to parse as ISO string
   try {
     return new Date(ts).toLocaleString();
   } catch {
@@ -51,7 +49,7 @@ function renderDevBlogContent(content) {
     return `<ul>${lis}</ul>`;
   });
 
-  // Numbered list: /ol{([^}]*)\}/g, (_, items) => {
+  // Numbered list: /ol{item1|item2|item3}
   html = html.replace(/\/ol\{([^}]*)\}/g, (_, items) => {
     const lis = items.split('|').map(i => `<li>${i.trim()}</li>`).join('');
     return `<ol>${lis}</ol>`;
@@ -80,19 +78,50 @@ function renderDevBlogContent(content) {
     return `<div style="background:#f1f5f9;padding:1em;border-radius:8px;display:flex;align-items:center;gap:0.7em;"><span style="font-size:1.3em;">${emoji.trim()}</span><span>${text.trim()}</span></div>`;
   });
 
-  // Code block: /pre{language|code}
-  html = html.replace(/\/pre\{([^|}]*)\|([^}]*)\}/g, (_, lang, code) => {
-    // Escape HTML in code block for safety
-    const escape = str => str.replace(/[&<>"']/g, c => ({
-      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
-    }[c]));
-    return `<pre><code class="language-${lang.trim()}">${escape(code.trim())}</code></pre>`;
+  // Code block or GitHub Page iframe: /pre{language|code} or /pre{iframe|url}
+  html = html.replace(/\/pre\{([^|}]*)\|([^}]*)\}/g, (_, lang, codeOrUrl) => {
+    if (lang.trim().toLowerCase() === 'iframe') {
+      let url = String(codeOrUrl).trim();
+      if (/^https:\/\/[a-zA-Z0-9\-]+\.github\.io\/[^\s]*$/.test(url)) {
+        return `<div style="margin:1em 0;"><iframe src="${url}" style="width:100%;min-height:400px;border:1px solid #eee;border-radius:6px;" loading="lazy" sandbox="allow-scripts allow-same-origin allow-popups"></iframe></div>`;
+      } else {
+        return `<div style="color:red;font-size:14px;">Invalid GitHub Pages URL for iframe: ${url}</div>`;
+      }
+    } else {
+      const escape = str => str.replace(/[&<>"']/g, c => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+      }[c]));
+      return `<pre><code class="language-${lang.trim()}">${escape(codeOrUrl.trim())}</code></pre>`;
+    }
   });
 
-  // Optionally, replace newlines with <br> (if you want to preserve line breaks outside blocks)
-  // html = html.replace(/\n/g, '<br>');
-
   return html;
+}
+
+// Helper to extract the first /pre code block's url (if present) and log it
+function extractAndLogFirstPreUrl(content) {
+  if (typeof content !== 'string') return;
+  const preMatch = content.match(/\/pre\{([^|}]*)\|([^}]*)\}/);
+  if (preMatch) {
+    const urlOrCode = preMatch[2];
+    console.log(urlOrCode);
+  }
+}
+
+// Helper to determine if a post preview contains an image slash command
+function previewHasImage(content) {
+  if (typeof content !== 'string') return false;
+  let preview = content;
+  if (preview.length > 300) {
+    let cut = preview.slice(0, 300);
+    const lastSlash = cut.lastIndexOf('/');
+    const lastBrace = cut.lastIndexOf('}');
+    if (lastSlash > lastBrace) {
+      cut = cut.slice(0, lastSlash);
+    }
+    preview = cut + '...';
+  }
+  return /\/img\{([^|}]*)\|([^}]*)\}/.test(preview);
 }
 
 function DevBlog() {
@@ -121,6 +150,8 @@ function DevBlog() {
   }, []);
 
   if (selectedPost) {
+    extractAndLogFirstPreUrl(selectedPost.content);
+
     return (
       <>
         <Navbar />
@@ -134,7 +165,6 @@ function DevBlog() {
           </div>
           <div
             className="devblog-post-content"
-            // Render parsed HTML from slash commands
             dangerouslySetInnerHTML={{ __html: renderDevBlogContent(selectedPost.content) }}
           />
         </div>
@@ -155,48 +185,103 @@ function DevBlog() {
             No dev blog posts yet.
           </div>
         )}
-        {posts.map(post => (
-          <div
-            key={post.id}
-            className="devblog-post"
-            onClick={() => setSelectedPost(post)}
-            tabIndex={0}
-            onKeyDown={e => {
-              if (e.key === 'Enter' || e.key === ' ') setSelectedPost(post);
-            }}
-            role="button"
-            aria-label={`View post: ${post.title}`}
-          >
-            <div className="devblog-post-title">{post.title}</div>
-            <div className="devblog-post-date">
-              {post.createdAt ? formatDate(post.createdAt) : ''}
+        {posts.map(post => {
+          const raw = post.content || '';
+          let preview = null;
+          let isUrlPreview = false;
+
+          // Check if raw is a string and contains the specific iframe srcdoc snippet
+          // Check for iframe code block with fetch, and extract the URL from fetch('...')
+          if (
+            typeof raw === 'string' &&
+            raw.includes("<iframe srcdoc=\"<pre><code id='code-block'>Loading...</code><script>")
+          ) {
+            // Try to extract the URL from fetch('...')
+            const fetchUrlMatch = raw.match(/fetch\(['"`]([^'"`]+)['"`]\)/);
+            if (fetchUrlMatch && fetchUrlMatch[1]) {
+              const url = fetchUrlMatch[1];
+              // display the url as preview
+              preview = url;
+              isUrlPreview = true;
+            }
+          }
+          if (preview === null) {
+            preview = raw;
+          }
+          if (!isUrlPreview && raw.length > 300) {
+            let cut = raw.slice(0, 300);
+            const lastSlash = cut.lastIndexOf('/');
+            const lastBrace = cut.lastIndexOf('}');
+            if (lastSlash > lastBrace) {
+              cut = cut.slice(0, lastSlash);
+            }
+            preview = cut + '...';
+          }
+          // No code block extraction for preview meta
+          const hasImage = previewHasImage(raw);
+
+          return (
+            <div
+              key={post.id}
+              className="devblog-post"
+              onClick={() => setSelectedPost(post)}
+              tabIndex={0}
+              onKeyDown={e => {
+                if (e.key === 'Enter' || e.key === ' ') setSelectedPost(post);
+              }}
+              role="button"
+              aria-label={`View post: ${post.title}`}
+            >
+              <div className="devblog-post-title">{post.title}</div>
+              <div className="devblog-post-date">
+                {post.createdAt ? formatDate(post.createdAt) : ''}
+              </div>
+              <div className="devblog-post-content">
+                {/* No codeInfo meta display */}
+                {hasImage && (
+                  <span
+                    className="devblog-preview-image-indicator"
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.4em',
+                      fontSize: '0.93em',
+                      color: '#0ea5e9',
+                      marginBottom: '0.3em',
+                      fontWeight: 500,
+                    }}
+                  >
+                    <svg width="16" height="16" viewBox="0 0 20 20" fill="none" style={{marginRight: 3, verticalAlign: 'middle'}} xmlns="http://www.w3.org/2000/svg">
+                      <rect x="3" y="4" width="14" height="10" rx="2" fill="#0ea5e9" fillOpacity="0.13" stroke="#0ea5e9"/>
+                      <circle cx="7" cy="8" r="1.2" fill="#0ea5e9"/>
+                      <path d="M4.5 13L8.5 9L11.5 12L14.5 9L16 10.5" stroke="#0ea5e9" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    image
+                  </span>
+                )}
+                {isUrlPreview ? (
+                  <span style={{
+                    color: '#fff',
+                    backgroundColor: '#22c55e',
+                    border: '1.5px solid #16a34a',
+                    fontWeight: 500,
+                    wordBreak: 'break-all',
+                    borderRadius: '0.3em',
+                    padding: '0.13em 0.5em'
+                  }}>
+                    {preview}
+                  </span>
+                ) : (
+                  <span
+                    dangerouslySetInnerHTML={{
+                      __html: renderDevBlogContent(preview)
+                    }}
+                  />
+                )}
+              </div>
             </div>
-            <div className="devblog-post-content">
-              {/* Show a preview: parse and truncate the content */}
-              <span
-                dangerouslySetInnerHTML={{
-                  __html: (() => {
-                    const raw = post.content || '';
-                    // Truncate to 300 chars, but try not to break commands
-                    let preview = raw;
-                    if (raw.length > 300) {
-                      // Try to cut at a safe boundary
-                      let cut = raw.slice(0, 300);
-                      // If the last slash command is incomplete, cut before it
-                      const lastSlash = cut.lastIndexOf('/');
-                      const lastBrace = cut.lastIndexOf('}');
-                      if (lastSlash > lastBrace) {
-                        cut = cut.slice(0, lastSlash);
-                      }
-                      preview = cut + '...';
-                    }
-                    return renderDevBlogContent(preview);
-                  })()
-                }}
-              />
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </>
   );

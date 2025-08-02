@@ -5,7 +5,7 @@ import { app as firebaseApp } from '../config/firebase';
 import { getStorage, ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
-import './admin-pannel.css'
+import './admin-pannel.css';
 import './Create_blog.css';
 
 // --- SLASH COMMANDS & INTERCEPTOR ---
@@ -18,8 +18,8 @@ const SLASH_COMMANDS = [
   { cmd: '/i', desc: 'Italic', example: '/i{italic text}' },
   { cmd: '/u', desc: 'Underline', example: '/u{underlined text}' },
   { cmd: '/s', desc: 'Strikethrough', example: '/s{strikethrough}' },
-  { cmd: '/code', desc: 'Inline code', example: '/code{inline code}' },
-  { cmd: '/pre', desc: 'Code block', example: '/pre{js|console.log("hi");}' },
+  { cmd: '/code', desc: 'html code', example: '/code{inline code}' },
+  { cmd: '/pre', desc: 'Code block or GitHub Page iframe', example: '/pre{js|console.log("hi");} or /pre{iframe|https://your-github-username.github.io/your-repo/}' },
   { cmd: '/ul', desc: 'Bulleted list', example: '/ul{item1|item2|item3}' },
   { cmd: '/ol', desc: 'Numbered list', example: '/ol{item1|item2|item3}' },
   { cmd: '/toggle', desc: 'Toggle (Notion-style)', example: '/toggle{Title|Content}' },
@@ -88,7 +88,6 @@ export const interceptAndSendDevBlog = async (data) => {
 
     // Image: /img{URL|alt text}
     content = content.replace(/\/img\{([^|}]*)\|([^}]*)\}/g, (_, url, alt) => {
-      // Force url to be a string
       return `<img src="${String(url).trim()}" alt="${alt.trim()}" style="max-width:100%;">`;
     });
 
@@ -97,12 +96,49 @@ export const interceptAndSendDevBlog = async (data) => {
       return `<div style="background:#f1f5f9;padding:1em;border-radius:8px;display:flex;align-items:center;gap:0.7em;"><span style="font-size:1.3em;">${emoji.trim()}</span><span>${text.trim()}</span></div>`;
     });
 
-    // Code block: /pre{language|code}
-    content = content.replace(/\/pre\{([^|}]*)\|([^}]*)\}/g, (_, lang, code) => {
-      return `<pre><code class="language-${lang.trim()}">${code.trim()}</code></pre>`;
+    // Code block or GitHub Page iframe: /pre{language|code} or /pre{iframe|url}
+    content = content.replace(/\/pre\{([^|}]*)\|([^}]*)\}/g, (_, lang, codeOrUrl) => {
+      if (lang.trim().toLowerCase() === 'iframe') {
+        let url = String(codeOrUrl).trim();
+
+        // Case 1: GitHub blob URL (convert to raw)
+        const githubBlobMatch = url.match(/^https:\/\/github\.com\/([^\/]+)\/([^\/]+)\/blob\/(.+)$/);
+        if (githubBlobMatch) {
+          const [, user, repo, path] = githubBlobMatch;
+          const rawUrl = `https://raw.githubusercontent.com/${user}/${repo}/${path}`;
+          url = rawUrl;
+        }
+
+        // Case 2: GitHub Pages (static iframe)
+        if (/^https:\/\/[a-zA-Z0-9\-]+\.github\.io\/[^\s]*$/.test(url)) {
+          return `<div style="margin:1em 0;"><iframe src="${url}" style="width:100%;min-height:400px;border:1px solid #eee;border-radius:6px;" loading="lazy" sandbox="allow-scripts allow-same-origin allow-popups"></iframe></div>`;
+        }
+
+        // Case 3: Raw GitHub content (from blob conversion above or direct)
+        if (/^https:\/\/raw\.githubusercontent\.com\/[^\s]+$/.test(url)) {
+          return `<div style="margin:1em 0;">
+            <iframe srcdoc="<pre><code id='code-block'>Loading...</code><script>
+              fetch('${url}')
+                .then(r => r.text())
+                .then(t => {
+                  const el = document.getElementById('code-block');
+                  el.textContent = t;
+                });
+            </script>" 
+            style="width:100%;min-height:400px;border:1px solid #eee;border-radius:6px;" 
+            sandbox="allow-scripts" loading="lazy"></iframe>
+          </div>`;
+        }
+
+        // Invalid iframe URL
+        return `<div style="color:red;font-size:14px;">Invalid iframe URL: ${url}</div>`;
+      } else {
+        return `<pre><code class="language-${lang.trim()}">${codeOrUrl.trim()}</code></pre>`;
+      }
     });
 
-    data.content = content;
+    // Update the data object with the processed content
+    data = { ...data, content };
   }
 
   // Remove any accidental non-plain-JSON fields (like auth, user, etc)
@@ -139,8 +175,7 @@ export const interceptAndSendDevBlog = async (data) => {
 const ImgCommandPopup = ({
   onClose,
   onInsertUrl,
-  onInsertUpload,
-  anchorRef
+  onInsertUpload
 }) => {
   return (
     <div
@@ -195,8 +230,7 @@ const ImgCommandPopup = ({
 
 const ImgUrlInputPopup = ({
   onClose,
-  onInsert,
-  anchorRef
+  onInsert
 }) => {
   const [url, setUrl] = useState('');
   const [alt, setAlt] = useState('');
@@ -215,11 +249,9 @@ const ImgUrlInputPopup = ({
       setError('Please enter an image URL.');
       return;
     }
-    // Force url to be a string
     onInsert(String(url).trim(), alt.trim());
   };
 
-  // Change: Replace <form> with <div role="form"> to avoid nested forms
   return (
     <div
       className="img-command-popup-overlay"
@@ -283,17 +315,10 @@ const ImgUploadPopup = ({
   const [error, setError] = useState('');
   const fileInputRef = useRef(null);
 
-  // Get the current user for upload authentication
-  const [currentUser, setCurrentUser] = useState(null);
-
   useEffect(() => {
     setTimeout(() => {
       if (fileInputRef.current) fileInputRef.current.focus();
     }, 0);
-
-    // Always get the current user for Firebase Storage upload
-    const auth = getAuth(firebaseApp);
-    setCurrentUser(auth.currentUser);
   }, [firebaseApp]);
 
   const handleSubmit = async (e) => {
@@ -306,7 +331,6 @@ const ImgUploadPopup = ({
     }
     setUploading(true);
     try {
-      // Always get the current user for Firebase Storage upload
       const auth = getAuth(firebaseApp);
       const user = auth.currentUser;
       if (!user) {
@@ -315,19 +339,16 @@ const ImgUploadPopup = ({
         return;
       }
 
-      // Check file type
       if (!file.type.startsWith('image/')) {
         setError('Only image files are allowed.');
         setUploading(false);
         return;
       }
 
-      // Use the correct storage instance
       const storage = getStorage(firebaseApp);
       const filePath = `devblog_images/${Date.now()}_${file.name}`;
       const storageRef = ref(storage, filePath);
 
-      // Set custom metadata with user's UID (optional, for audit)
       const metadata = {
         contentType: file.type,
         customMetadata: {
@@ -335,18 +356,15 @@ const ImgUploadPopup = ({
         }
       };
 
-      // Use uploadBytesResumable for progress tracking (like gallery)
       const uploadTask = uploadBytesResumable(storageRef, file, metadata);
 
       uploadTask.on(
         'state_changed',
         (snapshot) => {
-          // Progress function
           const percent = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
           setProgress(percent);
         },
         (err) => {
-          // Error function
           if (
             err.code === 'storage/unauthorized' ||
             (err.message && err.message.includes('User does not have permission'))
@@ -368,10 +386,8 @@ const ImgUploadPopup = ({
           console.error(err);
         },
         async () => {
-          // Complete function
           try {
             const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-            // Force downloadURL to be a string
             onInsert(String(downloadURL), alt.trim() || file.name);
           } catch (err) {
             setError('Failed to get image URL.');
@@ -390,7 +406,6 @@ const ImgUploadPopup = ({
     }
   };
 
-  // Change: Replace <form> with <div role="form"> to avoid nested forms
   return (
     <div
       className="img-command-popup-overlay"
@@ -464,7 +479,6 @@ export const SlashCommandTextarea = ({
   const [showAutocomplete, setShowAutocomplete] = useState(false);
   const [autocompleteOptions, setAutocompleteOptions] = useState([]);
   const [autocompleteIndex, setAutocompleteIndex] = useState(0);
-  const [slashStart, setSlashStart] = useState(null);
   const textareaRef = useRef(null);
   const autocompleteRef = useRef(null);
 
@@ -475,7 +489,6 @@ export const SlashCommandTextarea = ({
 
   // Find the current word after the last slash
   const getSlashWord = (text, selectionStart) => {
-    // Find the last slash before the cursor
     const before = text.slice(0, selectionStart);
     const match = before.match(/\/[a-zA-Z0-9]*$/);
     if (match) {
@@ -501,11 +514,9 @@ export const SlashCommandTextarea = ({
       setAutocompleteOptions(filtered);
       setShowAutocomplete(filtered.length > 0);
       setAutocompleteIndex(0);
-      setSlashStart(slashWord.start);
     } else {
       setShowAutocomplete(false);
       setAutocompleteOptions([]);
-      setSlashStart(null);
     }
     onChange(e);
   };
@@ -556,7 +567,6 @@ export const SlashCommandTextarea = ({
           value: newValue
         }
       });
-      // Move cursor to after the inserted command
       setTimeout(() => {
         const pos = before.length + insert.length;
         textarea.setSelectionRange(pos, pos);
@@ -597,7 +607,6 @@ export const SlashCommandTextarea = ({
     if (!textarea) return;
     const text = textarea.value;
     const cursor = textarea.selectionStart;
-    // Find the /img command in the text before the cursor
     const slashWord = getSlashWord(text, cursor);
     let before, after;
     if (slashWord && text.slice(slashWord.start, cursor) === '/img') {
@@ -607,7 +616,6 @@ export const SlashCommandTextarea = ({
       before = text.slice(0, cursor);
       after = text.slice(cursor);
     }
-    // Force url to be a string
     const insert = `/img{${String(url)}|${alt}}`;
     const newValue = before + insert + after;
     onChange({
@@ -711,7 +719,6 @@ const CreateBlog = () => {
     const auth = getAuth(app);
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser) => {
       if (!firebaseUser) {
-        // Not logged in, redirect to login page
         navigate('/login', { replace: true });
       } else {
         setUser(firebaseUser);
@@ -719,17 +726,12 @@ const CreateBlog = () => {
       setAuthChecked(true);
     });
     return () => unsubscribe();
-    // eslint-disable-next-line
   }, [navigate]);
 
   const handleBack = () => {
     navigate(-1);
   };
 
-  /**
-   * Only authenticated users can create devblogPosts (see Firestore rules).
-   * The user is checked on mount and redirected if not authenticated.
-   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -740,13 +742,11 @@ const CreateBlog = () => {
     }
     setLoading(true);
     try {
-      // Only pass plain values to Firestore (no user object, no auth, etc)
       await interceptAndSendDevBlog({
         title: title.trim(),
         content: content.trim(),
         createdAt: serverTimestamp(),
-        authorId: user && user.uid ? user.uid : null // Only the UID, not the user object
-        // Do NOT include 'auth' or 'user' fields!
+        authorId: user && user.uid ? user.uid : null
       });
       setSuccess('Blog post created!');
       setTitle('');

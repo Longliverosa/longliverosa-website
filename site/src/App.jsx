@@ -88,6 +88,18 @@ function BubblesBackground() {
     }
     window.addEventListener('resize', handleResize);
 
+    // Handle tab visibility change to cull bubbles
+    function handleVisibilityChange() {
+      if (document.hidden) {
+        // Cull all bubbles when tab is hidden (user alt-tabs or switches away)
+        bubblesRef.current = [];
+        // Also clear the canvas immediately
+        const ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
     // Animation
     function animate() {
       if (!running) return;
@@ -134,12 +146,16 @@ function BubblesBackground() {
       spawnTimeoutRef.current = setTimeout(spawnLoop, next);
     }
 
+    //call the animation loop
     animate();
+    //spawn bubbles
     spawnLoop();
 
+    //disable bubbles 
     return () => {
       running = false;
       window.removeEventListener('resize', handleResize);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
       if (animationRef.current) cancelAnimationFrame(animationRef.current);
       if (spawnTimeoutRef.current) clearTimeout(spawnTimeoutRef.current);
     };
@@ -234,6 +250,7 @@ function App() {
             style={{ marginRight: '0.5em', verticalAlign: 'middle' }}
             aria-hidden="true"
           >
+            /* path for the image used for now we dont host this image change this later */
             <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
               0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52
               -.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2

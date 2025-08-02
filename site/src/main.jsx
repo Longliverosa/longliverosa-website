@@ -19,7 +19,19 @@ const ApproveRosa = lazy(() => import('./approve-rosa.jsx'))
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense
+        fallback={
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            minHeight: '100vh',
+            width: '100vw'
+          }}>
+            Loading...
+          </div>
+        }
+      >
         <Routes>
           <Route path="/" element={<App />} />
           <Route path="/art-gallery" element={<ArtGallery />} />

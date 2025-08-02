@@ -2,7 +2,7 @@ import './App.css'
 import { useRef, useEffect, useRef as useReactRef } from 'react'
 
 // --- Art Gallery Preload Logic ---
-// Ensure preloading does not affect First Contentful Paint (FCP)
+// Ensure pre  does not affect First Contentful Paint (FCP)
 // Only trigger preloading on user intent (hover/focus), and defer all work
 let artGalleryPreloadStarted = false;
 function preloadArtGalleryImages() {

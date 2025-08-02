@@ -31,9 +31,9 @@
 }
 
 .devblog-post-title {
-  color: #3730a3;
+  color: #002fff;
   font-size: 1.35rem;
-  font-weight: 600;
+  font-weight: 800; /* Make text bold */
   margin-bottom: 0.5rem;
   letter-spacing: 0.5px;
 }

@@ -1,0 +1,296 @@
+/** Admin Panel Styles */
+
+.admin-panel-container {
+  width: 100%;
+  max-width: 420px;
+  margin: 48px auto;
+  padding: 2rem 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px 0 rgba(55, 48, 163, 0.10), 0 1.5px 4px 0 rgba(0,0,0,0.04);
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+  box-sizing: border-box;
+  /* Remove position/size constraints for devpost form inside container */
+}
+
+.admin-panel-form.devpost-form {
+  /* Make devpost form break out of the container and cover most of the page */
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  width: auto;
+  max-width: 900px;
+  min-width: 0;
+  min-height: calc(100vh - 2rem);
+  margin: auto;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  box-sizing: border-box;
+  background: #f8fafc;
+  border-radius: 32px;
+  padding: 4rem 3.5vw;
+  box-shadow: 0 6px 32px 0 rgba(55, 48, 163, 0.12), 0 2px 8px 0 rgba(0,0,0,0.06);
+  gap: 2rem;
+  overflow-y: auto;
+}
+
+.admin-panel-title {
+  color: #3730a3;
+  margin-bottom: 1.5rem;
+}
+
+.admin-panel-error {
+  color: red;
+  margin-bottom: 1rem;
+  font-weight: 500;
+}
+
+.admin-panel-btn,
+.admin-panel-btn:disabled {
+  padding: 0.8rem 2rem;
+  background: linear-gradient(90deg, #6366f1 0%, #3730a3 100%);
+  color: #fff;
+  font-size: 1.08rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  box-shadow: 0 2px 8px 0 rgba(99, 102, 241, 0.10);
+  transition: background 0.2s, transform 0.1s;
+}
+
+.admin-panel-btn:disabled {
+  background: linear-gradient(90deg, #a5b4fc 0%, #a5b4fc 100%);
+  cursor: not-allowed;
+}
+
+.admin-panel-btn-back {
+  padding: 0.7rem 2rem;
+  background: #e0e7ff;
+  color: #3730a3;
+  font-size: 1.05rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  box-shadow: 0 1px 4px 0 rgba(99, 102, 241, 0.08);
+  transition: background 0.2s, transform 0.1s;
+}
+
+.admin-panel-form {
+  width: 100%;
+  max-width: 350px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.admin-panel-form label {
+  font-weight: 500;
+  color: #4b5563;
+}
+
+.admin-panel-form input[type="text"],
+.admin-panel-form input[type="file"],
+.admin-panel-form textarea {
+  width: 100%;
+  border: 1.5px solid #c7d2fe;
+  border-radius: 7px;
+  font-size: 1rem;
+  background: #f1f5f9;
+  color: #1e293b;
+  margin-top: 0.2rem;
+  box-sizing: border-box;
+}
+
+.admin-panel-form input[type="file"] {
+  padding: 0.5rem 0.5rem;
+}
+
+.admin-panel-form textarea {
+  resize: vertical;
+}
+
+/* Make textarea in devpost form much larger for blog writing */
+.admin-panel-form.devpost-form textarea {
+  min-height: 350px;
+  font-size: 1.1rem;
+  padding: 1rem;
+  line-height: 1.6;
+}
+
+.admin-panel-success {
+  color: green;
+  font-weight: 500;
+  margin-bottom: -0.7rem;
+}
+
+.admin-panel-error-inline {
+  color: red;
+  font-weight: 500;
+  margin-bottom: -0.7rem;
+}
+
+.admin-panel-invite-code {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #3730a3;
+  letter-spacing: 2px;
+  margin-bottom: 1.5rem;
+}
+
+.admin-panel-btn-row {
+  display: flex;
+  gap: 1rem;
+  width: 100%;
+  justify-content: center;
+}
+
+.admin-panel-flex-col-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+}
+
+/* --- MISSING CSS FROM COMPONENTS --- */
+
+/* Slash command autocomplete dropdown for devpost form */
+.slash-autocomplete-dropdown {
+  font-family: inherit;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 100%;
+  z-index: 10;
+  background: white;
+  color: black;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  margin-top: 2px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  max-height: 220px;
+  overflow-y: auto;
+  font-size: 14px;
+}
+
+.slash-autocomplete-option {
+  padding: 8px 12px;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+}
+
+.slash-autocomplete-option.selected,
+.slash-autocomplete-option:hover {
+  background: #f1f5f9;
+}
+
+.slash-autocomplete-option span {
+  /* For better spacing in dropdown */
+  margin-bottom: 1px;
+}
+
+.slash-autocomplete-option span:first-child {
+  font-weight: 500;
+}
+
+.slash-autocomplete-option span:nth-child(2) {
+  color: #666;
+  font-size: 12px;
+}
+
+.slash-autocomplete-option span:nth-child(3) {
+  color: #aaa;
+  font-size: 11px;
+}
+
+/* Responsive adjustments for devpost form */
+@media (max-width: 700px) {
+  .admin-panel-form.devpost-form {
+    padding: 2rem 2vw;
+    border-radius: 18px;
+  }
+  .admin-panel-form.devpost-form textarea {
+    min-height: 180px;
+    font-size: 1rem;
+    padding: 0.7rem;
+  }
+}
+
+/* Hide scrollbars for autocomplete dropdown on Webkit browsers */
+.slash-autocomplete-dropdown::-webkit-scrollbar {
+  width: 6px;
+  background: #f1f5f9;
+}
+.slash-autocomplete-dropdown::-webkit-scrollbar-thumb {
+  background: #e0e7ff;
+  border-radius: 3px;
+}
+
+/* Utility: visually hide but keep accessible */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0,0,0,0) !important;
+  border: 0 !important;
+}
+
+/* Add focus style for accessibility */
+.admin-panel-form input:focus,
+.admin-panel-form textarea:focus {
+  outline: 2px solid #6366f1;
+  outline-offset: 1px;
+  border-color: #6366f1;
+}
+
+/* Add a little spacing for form elements */
+.admin-panel-form label,
+.admin-panel-form input,
+.admin-panel-form textarea {
+  margin-bottom: 0.7rem;
+}
+
+/* Make sure file input label and input are spaced */
+.admin-panel-form input[type="file"] {
+  margin-bottom: 1rem;
+}
+
+/* Add a little spacing for the devpost form's title input */
+.admin-panel-form.devpost-form input[type="text"] {
+  font-size: 1.15rem;
+  padding: 0.7rem 1rem;
+  margin-bottom: 1.2rem;
+}
+
+/* Add a little spacing for the devpost form's label */
+.admin-panel-form.devpost-form label {
+  margin-bottom: 0.3rem;
+}
+
+/* Add a little spacing for the devpost form's button row */
+.admin-panel-form.devpost-form .admin-panel-btn-row {
+  margin-top: 1.2rem;
+}
+
+/* Add a little spacing for the add art form's button row */
+.admin-panel-form .admin-panel-btn-row {
+  margin-top: 1.2rem;
+}
+
+/* End missing CSS */

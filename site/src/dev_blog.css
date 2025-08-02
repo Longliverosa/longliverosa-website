@@ -1,0 +1,174 @@
+/** Dev Blog Styles */
+.devblog-container {
+  max-width: 700px;
+  margin: 48px auto;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px 0 rgba(55, 48, 163, 0.10), 0 1.5px 4px 0 rgba(0,0,0,0.04);
+}
+
+.devblog-title {
+  color: #3730a3;
+  font-size: 2.1rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  letter-spacing: 1px;
+}
+
+.devblog-post {
+  border-bottom: 1.5px solid #e0e7ff;
+  padding-bottom: 1.2rem;
+  margin-bottom: 2.2rem;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+
+.devblog-post:focus,
+.devblog-post:hover {
+  background: #f1f5ff;
+  outline: none;
+}
+
+.devblog-post-title {
+  color: #3730a3;
+  font-size: 1.35rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.5px;
+}
+
+.devblog-post-date {
+  color: #6b7280;
+  font-size: 0.98rem;
+  margin-bottom: 0.7rem;
+}
+
+.devblog-post-content {
+  color: #22223b;
+  font-size: 1.08rem;
+  line-height: 1.7;
+  white-space: pre-line;
+}
+
+.devblog-back-btn {
+  display: inline-block;
+  margin-bottom: 1.5rem;
+  color: #3730a3;
+  background: #e0e7ff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.5rem 1.1rem;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background 0.13s;
+}
+
+.devblog-back-btn:hover,
+.devblog-back-btn:focus {
+  background: #c7d2fe;
+  outline: none;
+}
+
+/* Navbar styles (black, matching App.jsx) */
+.devblog-navbar {
+  width: 100%;
+  background: #22223b;
+  border-bottom: 1.5px solid #e0e7ff;
+  padding: 0.7rem 0;
+  margin-bottom: 2.5rem;
+  box-shadow: 0 2px 8px 0 rgba(55, 48, 163, 0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.devblog-navbar-inner {
+  width: 100%;
+  max-width: 1100px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+}
+
+.devblog-navbar-title {
+  font-weight: 700;
+  font-size: 1.45rem;
+  color: #fff;
+  letter-spacing: 1px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.devblog-navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+}
+
+.devblog-navbar-link {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1.05rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  transition: background 0.13s;
+  display: flex;
+  align-items: center;
+}
+
+.devblog-navbar-link:hover,
+.devblog-navbar-link:focus {
+  background: #3730a3;
+  outline: none;
+}
+
+.devblog-navbar-logo {
+  height: 1.5rem;
+  width: 1.5rem;
+  display: inline-block;
+}
+
+.devblog-navbar-mba-logo {
+  height: 1.5rem;
+  width: auto;
+  display: inline-block;
+  filter: brightness(0) invert(1); /* make logo white on dark bg */
+}
+
+/* Loading and empty state */
+.devblog-loading,
+.devblog-empty {
+  color: #3730a3;
+  font-size: 1.2rem;
+  margin-top: 32px;
+}
+
+.devblog-empty {
+  color: #6b7280;
+  font-size: 1.1rem;
+}
+
+/* Responsive */
+@media (max-width: 800px) {
+  .devblog-container {
+    padding: 1rem;
+  }
+  .devblog-navbar-inner {
+    padding: 0 1rem;
+  }
+}
+@media (max-width: 500px) {
+  .devblog-container {
+    padding: 0.5rem;
+  }
+  .devblog-title {
+    font-size: 1.3rem;
+  }
+  .devblog-navbar-title {
+    font-size: 1.1rem;
+  }
+}

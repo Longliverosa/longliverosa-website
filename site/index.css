@@ -1,0 +1,127 @@
+/** 
+ * Global styles and navbar styles for the app.
+ * This file is for global CSS (e.g., body, html, navbar, resets).
+ * For component-specific styles, use their own .css files.
+ */
+
+/* Set a pleasant blue background for the body by default */
+body {
+  background: #3399ff;
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+  min-height: 100vh;
+  box-sizing: border-box;
+  /* The padding-top is set in App.css to account for the navbar */
+}
+
+/* Remove default margin/padding from html */
+html {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Navbar styles (duplicated in App.css for SSR/consistency) */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background: #22223b;
+  color: #fff;
+  padding: 0.7rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border-bottom: 1.5px solid #e0e7ff;
+  box-shadow: 0 2px 8px 0 rgba(55, 48, 163, 0.04);
+}
+
+nav .nav-content {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-sizing: border-box;
+  padding: 0 2rem;
+}
+
+nav .nav-title {
+  font-weight: 700;
+  font-size: 1.45rem;
+  color: #fff;
+  letter-spacing: 1px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+nav .nav-links {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+}
+
+nav .nav-link {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1.05rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  transition: background 0.13s;
+  display: flex;
+  align-items: center;
+}
+
+nav .nav-link:hover,
+nav .nav-link:focus {
+  background: #3730a3;
+  outline: none;
+}
+
+nav .nav-logo {
+  height: 1.5rem;
+  width: 1.5rem;
+  display: inline-block;
+}
+
+nav .nav-mba-logo {
+  height: 1.5rem;
+  width: auto;
+  display: inline-block;
+  filter: brightness(0) invert(1);
+}
+
+/* Responsive styles for navbar */
+@media (max-width: 800px) {
+  nav .nav-content {
+    padding: 0 1rem;
+  }
+}
+@media (max-width: 500px) {
+  nav .nav-title {
+    font-size: 1.1rem;
+  }
+}
+
+/* Utility: Remove tap highlight on mobile */
+nav, nav * {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Remove outline for mouse users, keep for keyboard users */
+nav .nav-link:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Hide scrollbars for horizontal overflow */
+body, html {
+  overflow-x: hidden;
+}
+
+/* End global/navbar styles */

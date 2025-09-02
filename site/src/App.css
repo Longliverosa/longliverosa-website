@@ -18,20 +18,21 @@ html, body {
 
 /* GitHub button border */
 .github-link {
-  border: 0.25% solid #000;
-  border-radius: 0.75%;
-  padding: 2% 5%;
-  display: inline-flex;
-  align-items: center;
-  font-weight: 600;
-  background: #fff;
-  color: #22223b;
-  text-decoration: none;
-  transition: box-shadow 0.13s, border-color 0.13s;
-  margin-top: 3%;
-  margin-bottom: 2%;
-  box-shadow: 0 0.25% 1% 0 rgba(55, 48, 163, 0.04);
+  border:0.25px solid #000;
+  border-radius:2em;
+  padding:1% 5%;
+  display:inline-flex;
+  align-items:center;
+  font-weight:600;
+  background:#fff;
+  color:#22223b;
+  text-decoration:none;
+  transition:box-shadow .13s,border-color .13s;
+  margin-top:3%;
+  margin-bottom:2%;
+  box-shadow:0 2px 8px 0 #3730a30a;
 }
+
 .github-link:hover,
 .github-link:focus {
   border-color: #3730a3;

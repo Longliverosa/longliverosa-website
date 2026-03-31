@@ -212,7 +212,7 @@ function Navbar() {
           <a href="https://www.youtube.com/@DougDougHaters" className="nav-link">
             <img src="/youtube.png" alt="YouTube" className="nav-logo" />
           </a>
-          <a href="https://discord.com/invite/aX6JBrVC" className="nav-link">
+          <a href="https://discord.gg/Wtj3PPGkfX" className="nav-link">
             <img src="/Discord.png" alt="Discord" className="nav-logo" />
           </a>
           <a href="https://www.montereybayaquarium.org" className="nav-link">
